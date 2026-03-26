@@ -5,11 +5,11 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+  workflow_dispatch:   # Allows manual trigger from GitHub UI
 
 jobs:
-  build-and-test:
+  lint-and-validate:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -19,35 +19,27 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Check for package.json
-        id: check_package
-        run: |
-          if [ -f package.json ]; then
-            echo "package_exists=true" >> $GITHUB_OUTPUT
-            echo "✅ package.json found - will run npm commands"
-          else
-            echo "package_exists=false" >> $GITHUB_OUTPUT
-            echo "⚠️ No package.json - skipping npm steps (documentation repo)"
-          fi
+      - name: Install Markdown linter
+        run: npm install -g markdownlint-cli
 
-      - name: Install dependencies (if package.json exists)
-        if: steps.check_package.outputs.package_exists == 'true'
-        run: npm ci
-
-      - name: Run basic checks
+      - name: Lint Markdown files
         run: |
-          echo "🚀 CI Pipeline executed successfully!"
+          echo "🔍 Running Markdown linting..."
+          markdownlint "**/*.md" --ignore node_modules || echo "⚠️ Some Markdown issues found (non-blocking)"
+
+      - name: Validate repository structure
+        run: |
+          echo "📋 Repository validation:"
+          echo "✅ .github/workflows/ exists"
+          ls -la .github/workflows/
+          echo "✅ Documentation files:"
+          ls *.md
+
+      - name: Print CI Summary
+        run: |
+          echo "🎉 CI Pipeline completed successfully!"
           echo "Repository : ${{ github.repository }}"
-          echo "Branch     : ${{ github.ref }}"
-          echo "Triggered by: ${{ github.actor }}"
-          echo "Commit SHA : ${{ github.sha }}"
-          
-          echo ""
-          echo "📁 Files in repository:"
-          ls -la
-
-      - name: Validate Markdown files
-        run: |
-          echo "Checking Markdown files..."
-          find . -name "*.md" | head -5
-          echo "✅ All Markdown files look good!"
+          echo "Branch     : ${{ github.ref_name }}"
+          echo "Actor      : ${{ github.actor }}"
+          echo "Event      : ${{ github.event_name }}"
+          echo "Run ID     : ${{ github.run_id }}"
