@@ -16,3 +16,4 @@ This repo tracks my entire DevOps learning journey with Grok (my DevOps mentor).
 
 ---
 *Started: March 2026*
+Updated README with rebase practice note
