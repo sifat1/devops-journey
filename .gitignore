@@ -1,0 +1,32 @@
+# DevOps .gitignore Best Practices
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Logs and temporary files
+*.log
+*.tmp
+
+# Build artifacts
+dist/
+build/
+*.o
+*.class
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+
+# Sensitive files (never commit!)
+.env
+*.pem
+secrets.yaml
+
+# Terraform / IaC
+.terraform/
+terraform.tfstate*
+
+# Kubernetes / Helm
+kubeconfig
