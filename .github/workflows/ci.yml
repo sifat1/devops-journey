@@ -34,7 +34,11 @@ jobs:
           ls -la .github/workflows/
           echo "✅ Documentation files:"
           ls *.md
-
+      - name: Run dummy tests
+        run: |
+          echo "🧪 Running dummy tests for documentation repo..."
+          echo "✅ All tests passed (no real code to test yet)"
+          # In real projects, this would be: npm test or pytest, etc.
       - name: Print CI Summary
         run: |
           echo "🎉 CI Pipeline completed successfully!"
